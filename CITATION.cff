@@ -1,0 +1,22 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: WGUPS Delivery Route Planner
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Joseph
+    family-names: Curtis
+    email: jcur175@wgu.edu
+    affiliation: Western Governors University
+    orcid: 'https://orcid.org/0000-0002-5445-9015'
+repository-code: 'https://github.com/joseph-curtis/delivery-route-planner'
+abstract: >-
+  Determines an efficient route and delivery distribution
+  for Daily Local Deliveries (DLD)
+license: BSD-4-Clause
+version: '0.1'
+date-released: '2023-03-31'

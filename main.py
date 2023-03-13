@@ -14,14 +14,17 @@ __copyright__ = """
  WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
  License for the specific language governing permissions and limitations under
  the License.
+ 
+ If you use this software, please cite it using the metadata from the
+ CITATION.cff file.
 
 """
 __author__ = "Joseph Curtis"
 __version__ = "2023.03.12"
-# The main class for the Daily Local Deliveries Route Planner
 
 
 def main():
+    """The entry point for the Daily Local Delivery Route Planner Application"""
     pass
 
 
