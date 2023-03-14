@@ -2,9 +2,20 @@
 <module type="PYTHON_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+  <component name="PackageRequirementsSettings">
+    <option name="requirementsPath" value="C:\Users\joecu\OneDrive - Western Governors University\C950 Data Structures &amp; Algorithms II\delivery-route-planner\requirements.txt" />
+  </component>
+  <component name="PyDocumentationSettings">
+    <option name="format" value="NUMPY" />
+    <option name="myDocStringFormat" value="NumPy" />
+  </component>
+  <component name="ReSTService">
+    <option name="DOC_DIR" value="C:\Users\joecu\OneDrive - Western Governors University\C950 Data Structures &amp; Algorithms II\delivery-route-planner\docs" />
   </component>
 </module>

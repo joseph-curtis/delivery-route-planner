@@ -61,7 +61,7 @@ Usage *(how to run the program)* :
 Version
 -------
 
-**2023.03.31**
+``2023.03.31``
 
 .. _authors--contact:
 

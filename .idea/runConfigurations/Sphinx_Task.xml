@@ -1,0 +1,19 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Sphinx Task" type="docs" factoryName="Sphinx task">
+    <module name="delivery-route-planner" />
+    <option name="INTERPRETER_OPTIONS" value="" />
+    <option name="PARENT_ENVS" value="true" />
+    <option name="SDK_HOME" value="C:\Users\joecu\OneDrive - Western Governors University\C950 Data Structures &amp; Algorithms II\delivery-route-planner\venv\Scripts\python.exe" />
+    <option name="SDK_NAME" value="Python 3.11 (delivery-route-planner) (2)" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/docs" />
+    <option name="IS_MODULE_SDK" value="false" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <option name="docutils_input_file" value="C:\Users\joecu\OneDrive - Western Governors University\C950 Data Structures &amp; Algorithms II\delivery-route-planner\docs\source" />
+    <option name="docutils_output_file" value="C:\Users\joecu\OneDrive - Western Governors University\C950 Data Structures &amp; Algorithms II\delivery-route-planner\docs\build" />
+    <option name="docutils_params" value="" />
+    <option name="docutils_task" value="html" />
+    <option name="docutils_open_in_browser" value="false" />
+    <method v="2" />
+  </configuration>
+</component>

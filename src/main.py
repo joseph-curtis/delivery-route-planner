@@ -1,3 +1,4 @@
+__author__ = "Joseph Curtis"
 __license__ = "BSD 4-Clause"
 __copyright__ = """
 
@@ -19,8 +20,12 @@ __copyright__ = """
  CITATION.cff file.
 
 """
-__author__ = "Joseph Curtis"
-__version__ = "2023.03.12"
+# Title: Daily Local Delivery Route Planner Application
+# Description: Determines an efficient route and delivery distribution for Daily Local Deliveries (DLD)
+# Date: 14 Mar 2023
+# Sources: w3schools.com/python, docs.python.org, sdf stackoverflow.com, sololearn.com,
+#           Lysecky, R., & Vahid, F. (2018, June). C950: Data Structures and Algorithms II. zyBooks.
+#           [https://learn.zybooks.com/zybook/WGUC950AY20182019]
 
 
 def main():
