@@ -30,6 +30,9 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 #           [https://learn.zybooks.com/zybook/WGUC950AY20182019]
 import csv
 from argparse import ArgumentParser
+from itertools import islice
+import model
+import view
 
 parser = ArgumentParser(description='Process Daily Local Deliveries.')
 parser.add_argument('--table', '-t', required=False, default='data/distance-table.csv',
@@ -41,10 +44,34 @@ args = parser.parse_args()
 
 def main():
     """The entry point for the Daily Local Delivery Route Planner Application"""
-    with open(args.table, 'r') as d_table:
-        data = list(csv.reader(d_table, delimiter=','))
-        for row in data[1:]:
-            print(row)
+
+    # Load vertices into list:
+    vertex_list = []
+    with open(args.table, 'r') as distance_file:
+        d_table = csv.reader(distance_file, delimiter=',')
+        # for x in range(30):
+        next(d_table, None)  # skip the first 30 rows in file
+        for row in d_table:
+            label = row[0]
+            # full address is in row[1]
+            start_zip = row[1].index('\n')
+            end_zip = row[1].index(')')
+
+            address = row[1][:start_zip]
+            zipcode = row[1][start_zip + 2:end_zip]
+
+            vertex_list.append(model.Vertex(label, address, zipcode))
+
+        # Create graph using vertices from list:
+        route_graph = model.Graph()
+        for vertex in vertex_list:
+            route_graph.add_vertex(vertex)
+
+    # view.main_menu()
+    for item in vertex_list:
+        print(item)
+
+    print(route_graph)
 
 
 if __name__ == '__main__':

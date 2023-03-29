@@ -25,7 +25,7 @@ import datetime
 
 class PackageWGUPS:
     def __int__(self, package_id: int, destination: str, current_address: str,
-                deadline: datetime.time, weight_kg: int, notes: str):
+                deadline: datetime.time, weight_kg: float, notes: str):
         self.package_id = package_id
         self.destination = destination
         self.current_address = current_address
@@ -40,13 +40,13 @@ class PackageWGUPS:
 
 
 class Vehicle:
-    def __int__(self, current_address: str = 'HUB', status: str = 'At WGU HUB.'):
+    def __int__(self, current_address='HUB', status='At WGU HUB.'):
         self.inventory = []
         self.current_address = current_address
 
 
 class Vertex:
-    def __init__(self, label: str):
+    def __init__(self, label: str, address: str, zipcode: str = ''):
         """
         All vertex objects start with a distance of positive infinity.
 
@@ -54,10 +54,30 @@ class Vertex:
         ----------
         label : str
             name of the vertex
+        address : str
+            USPS formatted address
+        zipcode : str
+            address zipcode
         """
         self.label = label
+        self.address = address
+        self.zipcode = zipcode
         self.distance = float('inf')
         self.prev_vertex = None
+
+    def __eq__(self, other):
+        return isinstance(other, Vertex) \
+            and self.address == other.address \
+            and self.zipcode == other.zipcode
+
+    def __hash__(self):
+        return hash(self.label + self.address + self.zipcode)
+
+    def __repr__(self):
+        return f'Vertex("{self.label}", "{self.address}", "{self.zipcode}")'
+
+    def __str__(self):
+        return f'({self.label}: {self.address}; {self.zipcode})'
 
 
 class Graph:
@@ -65,16 +85,26 @@ class Graph:
         self.adjacency_list = {}  # vertex dictionary {key:value}
         self.edge_weights = {}  # edge dictionary {key:value}
 
-    def add_vertex(self, new_vertex):
+    # when referencing this object, use just the adjacency_list variable
+    def __repr__(self):
+        return f'Graph("{self.adjacency_list}")'
+
+    # String representation of the Graph's vertices
+    def __str__(self):
+        return "".join(str(item) for item in self.adjacency_list) \
+            .join(str(item) for item in self.edge_weights)
+
+    def add_vertex(self, new_vertex: Vertex):
         self.adjacency_list[new_vertex] = []  # {vertex_1: [], vertex_2: [], ...}
 
-    def add_directed_edge(self, from_vertex, to_vertex, weight=1.0):
+    def add_directed_edge(self, from_vertex: Vertex, to_vertex: Vertex,
+                          weight=1.0):
         self.edge_weights[(from_vertex, to_vertex)] = weight
         # {(vertex_1,vertex_2): 484, (vertex_1,vertex_3): 626, (vertex_2,vertex_6): 1306, ...}
         self.adjacency_list[from_vertex].append(to_vertex)
         # {vertex_1: [vertex_2, vertex_3], vertex_2: [vertex_6], ...}
 
-    def add_undirected_edge(self, vertex_a, vertex_b, weight=1.0):
+    def add_undirected_edge(self, vertex_a: Vertex, vertex_b: Vertex,
+                            weight=1.0):
         self.add_directed_edge(vertex_a, vertex_b, weight)
         self.add_directed_edge(vertex_b, vertex_a, weight)
-

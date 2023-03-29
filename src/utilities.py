@@ -40,7 +40,7 @@ class HashTableChained:
         The table that holds each bucket. Buckets contain tuples of key:value pairs.
     """
     # Constructor
-    def __init__(self, size: int = 11):
+    def __init__(self, size: int = 31):
         self.size = size
         self.hash_table = [[]] * self.size
 
@@ -81,6 +81,7 @@ class HashTableChained:
                 break
 
         # Update or append the new key/value pair to the bucket
+
         if found_key:
             bucket[index] = (key, value)
         else:
