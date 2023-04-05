@@ -19,7 +19,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 """
 # Description: Data structures and misc. utility functions
-# Date: 15 Mar 2023
+# Date: 4 Apr 2023
 
 
 class HashTableChained:
@@ -39,10 +39,9 @@ class HashTableChained:
     hash_table : list
         The table that holds each bucket. Buckets contain tuples of key:value pairs.
     """
-    # Constructor
     def __init__(self, size: int = 31):
         self.size = size
-        self.hash_table = [[]] * self.size
+        self.hash_table = [[] for _ in range(self.size)]
 
     # when referencing this object, use just the hash_table variable
     def __repr__(self):
