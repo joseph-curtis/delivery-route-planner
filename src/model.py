@@ -19,30 +19,9 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 """
 
-# Date: 17 Mar 2023
+# Date: 5 Apr 2023
 import datetime
-
-
-class PackageWGUPS:
-    def __int__(self, package_id: int, destination: str, current_address: str,
-                deadline: datetime.time, weight_kg: float, notes: str):
-        self.package_id = package_id
-        self.destination = destination
-        self.current_address = current_address
-        self.deadline = deadline
-        self.weight_kg = weight_kg
-        self.notes = notes
-        self.delivered = False
-
-    def __eq__(self, other):
-        if isinstance(other, PackageWGUPS):
-            return self.package_id == other.package_id
-
-
-class Vehicle:
-    def __int__(self, current_address='HUB', status='At WGU HUB.'):
-        self.inventory = []
-        self.current_address = current_address
+from utilities import HashTableChained
 
 
 class Vertex:
@@ -81,13 +60,17 @@ class Vertex:
 
 
 class Graph:
-    def __init__(self):
+    def __init__(self, adjacency_list=None, edge_weights=None):
+        if adjacency_list is None:
+            self.adjacency_list = {}
+        if edge_weights is None:
+            self.edge_weights = {}
         self.adjacency_list = {}  # vertex dictionary {key:value}
         self.edge_weights = {}  # edge dictionary {key:value}
 
     # when referencing this object, use just the adjacency_list variable
     def __repr__(self):
-        return f'Graph("{self.adjacency_list}")'
+        return f'Graph("{self.adjacency_list}", "{self.edge_weights}")'
 
     # String representation of the Graph's vertices
     def __str__(self):
@@ -108,3 +91,31 @@ class Graph:
                             weight=1.0):
         self.add_directed_edge(vertex_a, vertex_b, weight)
         self.add_directed_edge(vertex_b, vertex_a, weight)
+
+
+class PackageWGUPS:
+    def __init__(self, package_id: int, weight_kg: float, notes: str,
+                 destination: Vertex = None, delivered_to=None,
+                 deadline: datetime.time = datetime.time.max):
+        self.package_id = package_id
+        self.weight_kg = weight_kg
+        self.notes = notes
+        self.destination = destination
+        self.delivered_to = delivered_to
+        self.deadline = deadline
+
+    def __eq__(self, other):
+        return isinstance(other, PackageWGUPS) \
+            and self.package_id == other.package_id
+
+    def __hash__(self):
+        return hash(self.package_id)
+
+
+class Stockroom:
+    def __int__(self, current_address: Vertex = None, status='At WGU HUB.', mileage: float = 0.0):
+        self.current_address = current_address
+        self.status = status
+        self.mileage = mileage
+        self.inventory = HashTableChained()
+
