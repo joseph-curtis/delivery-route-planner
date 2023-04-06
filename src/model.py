@@ -62,20 +62,18 @@ class Vertex:
 class Graph:
     def __init__(self, adjacency_list=None, edge_weights=None):
         if adjacency_list is None:
-            self.adjacency_list = {}
+            self.adjacency_list = {}  # vertex dictionary {key:value}
         if edge_weights is None:
-            self.edge_weights = {}
-        self.adjacency_list = {}  # vertex dictionary {key:value}
-        self.edge_weights = {}  # edge dictionary {key:value}
+            self.edge_weights = {}  # edge dictionary {key:value}
 
-    # when referencing this object, use just the adjacency_list variable
+    # when referencing this object, use adjacency_list and edge_weights
     def __repr__(self):
         return f'Graph("{self.adjacency_list}", "{self.edge_weights}")'
 
     # String representation of the Graph's vertices
     def __str__(self):
-        return "".join(str(item) for item in self.adjacency_list) \
-            .join(str(item) for item in self.edge_weights)
+        return "\n".join(str(item) for item in self.adjacency_list)
+        # .join(str(item) for item in self.edge_weights)
 
     def add_vertex(self, new_vertex: Vertex):
         self.adjacency_list[new_vertex] = []  # {vertex_1: [], vertex_2: [], ...}
@@ -118,4 +116,3 @@ class Stockroom:
         self.status = status
         self.mileage = mileage
         self.inventory = HashTableChained()
-

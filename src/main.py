@@ -93,8 +93,8 @@ def main():
 
     # Hand off control to the view; show main menu
     # view.main_menu()
-    for item in vertex_list:
-        print(item)
+    # for item in vertex_list:
+    #    print(item)
 
     print(route_graph)
 

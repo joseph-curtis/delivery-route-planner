@@ -1,8 +1,6 @@
 __author__ = "Joseph Curtis"
 __license__ = "BSD 4-Clause"
-__copyright__ = """
-
- Copyright 2023 Joseph Curtis
+__copyright__ = """Copyright 2023 Joseph Curtis 
 
  Licensed under the BSD 4-Clause License, (the “Original” or “Old” License);
  you may not use this file except in compliance with the License.
@@ -20,5 +18,6 @@ __copyright__ = """
  CITATION.cff file.
 
 """
+
 # Date: 14 Mar 2023
 
