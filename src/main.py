@@ -30,9 +30,11 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 #           [https://learn.zybooks.com/zybook/WGUC950AY20182019]
 import csv
 from argparse import ArgumentParser
+from datetime import datetime
 from itertools import islice
 import model
 import view
+from utilities import HashTableChained
 
 parser = ArgumentParser(description='Process Daily Local Deliveries.')
 parser.add_argument('--table', '-t', required=False, default='data/distance-table.csv',
@@ -49,8 +51,7 @@ def main():
     vertex_list = []
     with open(args.table, 'r') as distance_file:
         d_table = csv.reader(distance_file, delimiter=',')
-        # for x in range(30):
-        next(d_table, None)  # skip the first 30 rows in file
+        next(d_table, None)  # skip the first row (column labels) in the table
         for row in d_table:
             label = row[0]
             # full address is in row[1]
@@ -67,6 +68,31 @@ def main():
         for vertex in vertex_list:
             route_graph.add_vertex(vertex)
 
+    # Load packages into a Hash Table:
+    all_packages = HashTableChained()
+    with open(args.packages, 'r') as package_file:
+        pak_table = csv.reader(package_file, delimiter=',')
+        next(pak_table, None)  # skip the first row (column labels) in the table
+        for row in pak_table:
+            package_id = int(row[0])
+
+            address_lbl = model.Vertex('unknown', row[1], row[4])
+            destination = address_lbl
+            for node in vertex_list:
+                if node == address_lbl:
+                    destination = node
+
+            if row[5] == 'EOD':
+                deadline = datetime.strptime('23:59:59.999999', '%H:%M:%S.%f').time()
+            else:
+                deadline = datetime.strptime(row[5], '%I:%M %p').time()
+            mass_lb = float(row[6])
+            note = row[7]
+
+            package = model.PackageWGUPS(package_id, mass_lb, note, destination, deadline)
+            all_packages.insert(package_id, package)
+
+    # Hand off control to the view; show main menu
     # view.main_menu()
     for item in vertex_list:
         print(item)

@@ -20,7 +20,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 """
 
 # Date: 5 Apr 2023
-import datetime
+from datetime import datetime
 from utilities import HashTableChained
 
 
@@ -94,15 +94,15 @@ class Graph:
 
 
 class PackageWGUPS:
-    def __init__(self, package_id: int, weight_kg: float, notes: str,
-                 destination: Vertex = None, delivered_to=None,
-                 deadline: datetime.time = datetime.time.max):
+    def __init__(self, package_id: int, mass_lb: float, notes: str,
+                 destination: Vertex = None,
+                 deadline=datetime.strptime('23:59:59.999999', '%H:%M:%S.%f').time()):
         self.package_id = package_id
-        self.weight_kg = weight_kg
+        self.mass_lb = mass_lb
         self.notes = notes
         self.destination = destination
-        self.delivered_to = delivered_to
         self.deadline = deadline
+        self.delivered_to = None
 
     def __eq__(self, other):
         return isinstance(other, PackageWGUPS) \
