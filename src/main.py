@@ -22,7 +22,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 # Title: Daily Local Delivery Route Planner Application
 # Description: Determines an efficient route and delivery distribution
 #              for Daily Local Deliveries (DLD)
-# Date: 19 Mar 2023
+# Date: 05 Apr 2023
 # Sources: w3schools.com/python, docs.python.org, geeksforgeeks.org,
 #          stackoverflow.com, sololearn.com,
 #          Lysecky, R., & Vahid, F. (2018, June).
@@ -31,9 +31,8 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 import csv
 from argparse import ArgumentParser
 from datetime import datetime
-from itertools import islice
+
 import model
-import view
 from utilities import HashTableChained
 
 parser = ArgumentParser(description='Process Daily Local Deliveries.')
