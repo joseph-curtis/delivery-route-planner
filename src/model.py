@@ -19,9 +19,9 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 """
 
-# Date: 5 Apr 2023
+# Date: 6 Apr 2023
 from datetime import datetime
-from utilities import HashTableChained
+from utilities import ChainingHashTable
 
 
 class Vertex:
@@ -102,6 +102,13 @@ class PackageWGUPS:
         self.deadline = deadline
         self.delivered_to = None
 
+    def __repr__(self):
+        return f'PackageWGUPS("{self.package_id}", "{self.mass_lb}",' \
+               f' "{self.notes}", "{self.destination}", "{self.deadline}")'
+
+    def __str__(self):
+        return f'Package(ID# "{self.package_id}": "{self.notes}"; TO: "{self.destination}", BY: "{self.deadline}")'
+
     def __eq__(self, other):
         return isinstance(other, PackageWGUPS) \
             and self.package_id == other.package_id
@@ -110,9 +117,11 @@ class PackageWGUPS:
         return hash(self.package_id)
 
 
-class Stockroom:
-    def __int__(self, current_address: Vertex = None, status='At WGU HUB.', mileage: float = 0.0):
+class DeliveryTruck:
+    def __init__(self, current_address: Vertex = None, status='parked at WGU hub', mileage: float = 0.0):
         self.current_address = current_address
         self.status = status
         self.mileage = mileage
-        self.inventory = HashTableChained()
+        self.inventory = ChainingHashTable()
+        self.route = Graph()
+

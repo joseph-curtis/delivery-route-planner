@@ -22,7 +22,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 # Title: Daily Local Delivery Route Planner Application
 # Description: Determines an efficient route and delivery distribution
 #              for Daily Local Deliveries (DLD)
-# Date: 05 Apr 2023
+# Date:    7 Apr 2023
 # Sources: w3schools.com/python, docs.python.org, geeksforgeeks.org,
 #          stackoverflow.com, sololearn.com,
 #          Lysecky, R., & Vahid, F. (2018, June).
@@ -33,7 +33,7 @@ from argparse import ArgumentParser
 from datetime import datetime
 
 import model
-from utilities import HashTableChained
+from utilities import ChainingHashTable
 
 parser = ArgumentParser(description='Process Daily Local Deliveries.')
 parser.add_argument('--table', '-t', required=False, default='data/distance-table.csv',
@@ -46,11 +46,16 @@ args = parser.parse_args()
 def main():
     """The entry point for the Daily Local Delivery Route Planner Application"""
 
-    # Load vertices into list:
+    salt_lake_city_graph = model.Graph()
     vertex_list = []
+    dist_array = []
+
+    # Load vertices into list:
     with open(args.table, 'r') as distance_file:
         d_table = csv.reader(distance_file, delimiter=',')
         next(d_table, None)  # skip the first row (column labels) in the table
+
+        row_index = 0
         for row in d_table:
             label = row[0]
             # full address is in row[1]
@@ -60,15 +65,58 @@ def main():
             address = row[1][:start_zip]
             zipcode = row[1][start_zip + 2:end_zip]
 
-            vertex_list.append(model.Vertex(label, address, zipcode))
+            new_vertex = model.Vertex(label, address, zipcode)
+            vertex_list.append(new_vertex)
+            salt_lake_city_graph.add_vertex(new_vertex)
 
-        # Create graph using vertices from list:
-        route_graph = model.Graph()
-        for vertex in vertex_list:
-            route_graph.add_vertex(vertex)
+            if row_index == 0:
+                dist_array = [[] for _ in range(len(row) - 2)]
 
-    # Load packages into a Hash Table:
-    all_packages = HashTableChained()
+            col_index = 0
+            for value in row[2:]:
+                if value == '':
+                    dist_array[row_index].append(None)
+                else:
+                    dist_array[row_index].append(float(value))
+                col_index += 1
+
+            row_index += 1
+
+        # Create graph using vertices from list, and distances from 2-dim array:
+        assert len(vertex_list) == len(dist_array)
+
+        for i in range(len(dist_array)):
+            for j in range(len(dist_array[i])):
+                if j > i:
+                    dist_array[i][j] = dist_array[j][i]
+
+    warehouse = load_package_data(vertex_list)
+
+    # Hand off control to the view; show main menu
+    # view.main_menu()
+    # for item in vertex_list:
+    #    print(item)
+
+    for package in warehouse:
+        print(str(package))
+    print(salt_lake_city_graph)
+
+
+def load_package_data(vertex_list):
+    """
+    Load packages into a Hash Table
+    Parameters
+    ----------
+    vertex_list :
+        List of all vertexes in the main salt_lake_city_graph
+
+    Returns
+    -------
+    warehouse_package_inventory :
+        Hash table of all packages at the beginning of delivery day
+
+    """
+    warehouse_package_inventory = ChainingHashTable()
     with open(args.packages, 'r') as package_file:
         pak_table = csv.reader(package_file, delimiter=',')
         next(pak_table, None)  # skip the first row (column labels) in the table
@@ -89,14 +137,9 @@ def main():
             note = row[7]
 
             package = model.PackageWGUPS(package_id, mass_lb, note, destination, deadline)
-            all_packages.insert(package_id, package)
+            warehouse_package_inventory.insert(package_id, package)
 
-    # Hand off control to the view; show main menu
-    # view.main_menu()
-    # for item in vertex_list:
-    #    print(item)
-
-    print(route_graph)
+            return warehouse_package_inventory
 
 
 if __name__ == '__main__':
