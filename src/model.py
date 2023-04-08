@@ -19,7 +19,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 """
 
-# Date: 6 Apr 2023
+# Date: 7 Apr 2023
 from datetime import datetime
 from utilities import ChainingHashTable
 
@@ -72,8 +72,12 @@ class Graph:
 
     # String representation of the Graph's vertices
     def __str__(self):
-        return "\n".join(str(item) for item in self.adjacency_list)
-        # .join(str(item) for item in self.edge_weights)
+        return_string = ''
+        for key, value in self.edge_weights.items():
+            vertex_a, vertex_b = key
+            return_string += str(vertex_a) + "-->" + str(vertex_b) + " : " + str(value) + "\n"
+        return "\n".join(str(item) for item in self.adjacency_list) \
+            + "\n" + return_string
 
     def add_vertex(self, new_vertex: Vertex):
         self.adjacency_list[new_vertex] = []  # {vertex_1: [], vertex_2: [], ...}
@@ -124,4 +128,3 @@ class DeliveryTruck:
         self.mileage = mileage
         self.inventory = ChainingHashTable()
         self.route = Graph()
-

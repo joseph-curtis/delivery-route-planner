@@ -90,6 +90,8 @@ def main():
                 if j > i:
                     dist_array[i][j] = dist_array[j][i]
 
+                salt_lake_city_graph.add_directed_edge(vertex_list[i], vertex_list[j], dist_array[i][j])
+
     warehouse = load_package_data(vertex_list)
 
     # Hand off control to the view; show main menu
@@ -100,7 +102,7 @@ def main():
     for package in warehouse:
         print(str(package))
     print(salt_lake_city_graph)
-
+    debug = "place debug marker here to look at data structs in debugger"
 
 def load_package_data(vertex_list):
     """
