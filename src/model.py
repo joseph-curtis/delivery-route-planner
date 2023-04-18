@@ -19,7 +19,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 """
 
-# Date: 7 Apr 2023
+# Date: 11 Apr 2023
 from datetime import datetime
 from utilities import ChainingHashTable
 
@@ -80,7 +80,8 @@ class Graph:
             + "\n" + return_string
 
     def add_vertex(self, new_vertex: Vertex):
-        self.adjacency_list[new_vertex] = []  # {vertex_1: [], vertex_2: [], ...}
+        if not(new_vertex in self.adjacency_list):
+            self.adjacency_list[new_vertex] = []  # {vertex_1: [], vertex_2: [], ...}
 
     def add_directed_edge(self, from_vertex: Vertex, to_vertex: Vertex,
                           weight=1.0):
@@ -122,9 +123,13 @@ class PackageWGUPS:
 
 
 class DeliveryTruck:
-    def __init__(self, current_address: Vertex = None, status='parked at WGU hub', mileage: float = 0.0):
+    def __init__(self, current_address: Vertex = None,
+                 mileage: float = 0.0, speed_mi_hr: float = 18.0, capacity: int = 16,
+                 departure_time: datetime.time = datetime.strptime('08:00', '%H:%M').time()):
         self.current_address = current_address
-        self.status = status
         self.mileage = mileage
+        self.speed_mi_hr = speed_mi_hr
+        self.capacity = capacity
+        self.departure_time = departure_time
         self.inventory = ChainingHashTable()
-        self.route = Graph()
+        self.route_list = [current_address]

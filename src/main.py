@@ -22,7 +22,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 # Title: Daily Local Delivery Route Planner Application
 # Description: Determines an efficient route and delivery distribution
 #              for Daily Local Deliveries (DLD)
-# Date:    7 Apr 2023
+# Date:    10 Apr 2023
 # Sources: w3schools.com/python, docs.python.org, geeksforgeeks.org,
 #          stackoverflow.com, sololearn.com,
 #          Lysecky, R., & Vahid, F. (2018, June).
@@ -32,6 +32,7 @@ import csv
 from argparse import ArgumentParser
 from datetime import datetime
 
+import controller
 import model
 from utilities import ChainingHashTable
 
@@ -46,11 +47,40 @@ args = parser.parse_args()
 def main():
     """The entry point for the Daily Local Delivery Route Planner Application"""
 
-    salt_lake_city_graph = model.Graph()
-    vertex_list = []
-    dist_array = []
-
     # Load vertices into list:
+    salt_lake_city_graph, vertex_list = load_distance_data()
+
+    # Load the HUB with all packages for the day
+    all_packages_hash_table = load_package_data(vertex_list)
+
+    # Load each truck with packages, and determine route:
+    truck1 = model.DeliveryTruck(vertex_list[0])
+    truck1 = controller.truck_load_packages(truck1, salt_lake_city_graph, all_packages_hash_table)
+
+    # Hand off control to the view; show main menu
+    # view.main_menu()
+    # for item in vertex_list:
+    #    print(item)
+
+    for package in all_packages_hash_table:
+        print(str(package))
+    print(salt_lake_city_graph)
+    debug = "place debug marker here to look at data structs in debugger"
+
+
+def load_distance_data():
+    """
+    Loads distance data into a graph
+    Returns
+    -------
+    salt_lake_city_graph : model.Graph()
+        Graph of all possible destination vertexes with distance data
+    vertex_list : list
+        An array of all possible destinations for packages
+    """
+    salt_lake_city_graph = model.Graph()
+    vertex_list = list()
+
     with open(args.table, 'r') as distance_file:
         d_table = csv.reader(distance_file, delimiter=',')
         next(d_table, None)  # skip the first row (column labels) in the table
@@ -82,27 +112,18 @@ def main():
 
             row_index += 1
 
-        # Create graph using vertices from list, and distances from 2-dim array:
-        assert len(vertex_list) == len(dist_array)
+    # Create graph using vertices from list, and distances from 2-dim array:
+    assert len(vertex_list) == len(dist_array)
 
-        for i in range(len(dist_array)):
-            for j in range(len(dist_array[i])):
-                if j > i:
-                    dist_array[i][j] = dist_array[j][i]
+    for i in range(len(dist_array)):
+        for j in range(len(dist_array[i])):
+            if j > i:
+                dist_array[i][j] = dist_array[j][i]
 
-                salt_lake_city_graph.add_directed_edge(vertex_list[i], vertex_list[j], dist_array[i][j])
+            salt_lake_city_graph.add_directed_edge(vertex_list[i], vertex_list[j], dist_array[i][j])
 
-    warehouse = load_package_data(vertex_list)
+    return salt_lake_city_graph, vertex_list
 
-    # Hand off control to the view; show main menu
-    # view.main_menu()
-    # for item in vertex_list:
-    #    print(item)
-
-    for package in warehouse:
-        print(str(package))
-    print(salt_lake_city_graph)
-    debug = "place debug marker here to look at data structs in debugger"
 
 def load_package_data(vertex_list):
     """
@@ -141,7 +162,7 @@ def load_package_data(vertex_list):
             package = model.PackageWGUPS(package_id, mass_lb, note, destination, deadline)
             warehouse_package_inventory.insert(package_id, package)
 
-            return warehouse_package_inventory
+    return warehouse_package_inventory
 
 
 if __name__ == '__main__':
