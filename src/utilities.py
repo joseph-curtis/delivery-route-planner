@@ -21,7 +21,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 
 # Description: Data structures and misc. utility functions
-# Date: 7 Apr 2023
+# Date: 24 Apr 2023
 
 
 class ChainingHashTable:
@@ -92,7 +92,7 @@ class ChainingHashTable:
         else:
             bucket.append((key, value))
 
-    def get_value(self, key):
+    def get(self, key):
         """
         Get a value associated with specific key
 
@@ -115,7 +115,7 @@ class ChainingHashTable:
         for (index, record) in enumerate(bucket):
             (record_key, record_val) = record
 
-            if record_key.equals(key) == key:
+            if record_key == key:
                 key_found = True
                 break
 
@@ -197,3 +197,4 @@ class ChainingHashTableIter:
                 self._current_item = 0
 
         raise StopIteration
+

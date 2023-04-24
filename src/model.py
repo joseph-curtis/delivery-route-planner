@@ -19,7 +19,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 """
 
-# Date: 11 Apr 2023
+# Date: 19 Apr 2023
 from datetime import datetime
 from utilities import ChainingHashTable
 
@@ -80,7 +80,7 @@ class Graph:
             + "\n" + return_string
 
     def add_vertex(self, new_vertex: Vertex):
-        if not(new_vertex in self.adjacency_list):
+        if not (new_vertex in self.adjacency_list):
             self.adjacency_list[new_vertex] = []  # {vertex_1: [], vertex_2: [], ...}
 
     def add_directed_edge(self, from_vertex: Vertex, to_vertex: Vertex,
@@ -123,13 +123,35 @@ class PackageWGUPS:
 
 
 class DeliveryTruck:
-    def __init__(self, current_address: Vertex = None,
-                 mileage: float = 0.0, speed_mi_hr: float = 18.0, capacity: int = 16,
-                 departure_time: datetime.time = datetime.strptime('08:00', '%H:%M').time()):
+    def __init__(self, current_address: Vertex,
+                 departure_time: datetime.time = datetime.strptime('08:00', '%H:%M').time(),
+                 mileage: float = 0.0, speed_mi_hr: float = 18.0, capacity: int = 16):
         self.current_address = current_address
         self.mileage = mileage
         self.speed_mi_hr = speed_mi_hr
         self.capacity = capacity
         self.departure_time = departure_time
+        self.travel_time = departure_time
         self.inventory = ChainingHashTable()
         self.route_list = [current_address]
+        self.truck_packages = []
+
+
+def distance_between(address1: Vertex, address2: Vertex, city_map: Graph):
+    try:
+        distance = city_map.edge_weights[(address1, address2)]
+        return distance
+    except KeyError:
+        print('Edge not found in Graph between: ' + address1.label + ', AND: ' + address2.label)
+
+
+def min_distance_address_from(from_address: Vertex, city_map: Graph,
+                              truck_packages: ChainingHashTable):
+    closest_address = from_address
+    closest_distance = float('inf')
+    for item in truck_packages:
+        if distance_between(from_address, item.destination, city_map) < closest_distance:
+            closest_address = item.destination
+            closest_distance = distance_between(from_address, item.destination, city_map)
+
+    return closest_address

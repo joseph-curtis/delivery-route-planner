@@ -32,8 +32,8 @@ import csv
 from argparse import ArgumentParser
 from datetime import datetime
 
-import controller
-import model
+from model import Vertex, Graph, PackageWGUPS
+from controller import load_trucks_manual
 from utilities import ChainingHashTable
 
 parser = ArgumentParser(description='Process Daily Local Deliveries.')
@@ -48,14 +48,13 @@ def main():
     """The entry point for the Daily Local Delivery Route Planner Application"""
 
     # Load vertices into list:
-    salt_lake_city_graph, vertex_list = load_distance_data()
+    salt_lake_city_graph, vertex_list, hub_address = load_distance_data()
 
     # Load the HUB with all packages for the day
     all_packages_hash_table = load_package_data(vertex_list)
 
     # Load each truck with packages, and determine route:
-    truck1 = model.DeliveryTruck(vertex_list[0])
-    truck1 = controller.truck_load_packages(truck1, salt_lake_city_graph, all_packages_hash_table)
+    truck1a, truck1b, truck2a, truck2b = load_trucks_manual(hub_address, all_packages_hash_table)
 
     # Hand off control to the view; show main menu
     # view.main_menu()
@@ -65,7 +64,6 @@ def main():
     for package in all_packages_hash_table:
         print(str(package))
     print(salt_lake_city_graph)
-    debug = "place debug marker here to look at data structs in debugger"
 
 
 def load_distance_data():
@@ -78,7 +76,7 @@ def load_distance_data():
     vertex_list : list
         An array of all possible destinations for packages
     """
-    salt_lake_city_graph = model.Graph()
+    salt_lake_city_graph = Graph()
     vertex_list = list()
 
     with open(args.table, 'r') as distance_file:
@@ -95,7 +93,7 @@ def load_distance_data():
             address = row[1][:start_zip]
             zipcode = row[1][start_zip + 2:end_zip]
 
-            new_vertex = model.Vertex(label, address, zipcode)
+            new_vertex = Vertex(label, address, zipcode)
             vertex_list.append(new_vertex)
             salt_lake_city_graph.add_vertex(new_vertex)
 
@@ -122,7 +120,9 @@ def load_distance_data():
 
             salt_lake_city_graph.add_directed_edge(vertex_list[i], vertex_list[j], dist_array[i][j])
 
-    return salt_lake_city_graph, vertex_list
+    hub_address = vertex_list[0]
+
+    return salt_lake_city_graph, vertex_list, hub_address
 
 
 def load_package_data(vertex_list):
@@ -146,7 +146,7 @@ def load_package_data(vertex_list):
         for row in pak_table:
             package_id = int(row[0])
 
-            address_lbl = model.Vertex('unknown', row[1], row[4])
+            address_lbl = Vertex('unknown', row[1], row[4])
             destination = address_lbl
             for node in vertex_list:
                 if node == address_lbl:
@@ -159,7 +159,7 @@ def load_package_data(vertex_list):
             mass_lb = float(row[6])
             note = row[7]
 
-            package = model.PackageWGUPS(package_id, mass_lb, note, destination, deadline)
+            package = PackageWGUPS(package_id, mass_lb, note, destination, deadline)
             warehouse_package_inventory.insert(package_id, package)
 
     return warehouse_package_inventory
