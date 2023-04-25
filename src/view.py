@@ -24,21 +24,31 @@ import sys
 
 # Date: 28 Mar 2023
 
-def main_menu():
-    print("\nWelcome to WGUPS Package Delivery Route Planner")
+def main_menu(packages_hash_table, truck_list):
+    print("\n*** Welcome to WGUPS Package Delivery Route Planner ***")
 
     user_quits = False
     while not user_quits:
-        print("\n************************************************************\n")
+        print('*' * 80)
         print("\nPlease select option from below:")
         print(" [1] Show All Packages and Total Mileage at End of Day")
         print(" [2] Get a Package Status from Time")
         print(" [3] Show All Packages Status from Time")
         print(" [4] Exit Program")
-        print("\n************************************************************\n")
+        print('*' * 80)
         option = input("Chose an option [1],[2],[3], or [4] : ")
         if option == "1":
-            pass
+            print('=' * 80)
+            print('=' + "ALL PACKAGES AT END OF DAY".center(78) + '=')
+            print('=' * 80)
+            print("Package ID | Address | City | State | Zip | Deadline | Mass | Status")
+            for key_value_tuple in packages_hash_table:
+                key, pkg = key_value_tuple
+                print(str(pkg.package_id).rjust(10) + ' | ' + pkg.destination.address.ljust(22) + ' | '
+                      + pkg.city.ljust(16) + ' | ' + pkg.state + ' | ' + pkg.destination.zipcode + ' | '
+                      + pkg.deadline_str.ljust(8) + ' | ' + str(pkg.mass_kg).rjust(4) + ' | '
+                      + "Delivered: " + str(pkg.delivery_time))
+
         elif option == "2":
             pass
         elif option == "3":

@@ -32,8 +32,9 @@ import csv
 from argparse import ArgumentParser
 from datetime import datetime
 
+import view
 from model import Vertex, Graph, PackageWGUPS
-from controller import load_trucks_manual
+from controller import load_trucks_manual, truck_deliver_packages
 from utilities import ChainingHashTable
 
 parser = ArgumentParser(description='Process Daily Local Deliveries.')
@@ -55,15 +56,20 @@ def main():
 
     # Load each truck with packages, and determine route:
     truck1a, truck1b, truck2a, truck2b = load_trucks_manual(hub_address, all_packages_hash_table)
+    truck_list = [truck1a, truck1b, truck2a, truck2b]
+
+    # Deliver all packages:
+    truck1a = truck_deliver_packages(truck1a, salt_lake_city_graph, all_packages_hash_table)
+    truck2a = truck_deliver_packages(truck2a, salt_lake_city_graph, all_packages_hash_table)
+    truck1b = truck_deliver_packages(truck1b, salt_lake_city_graph, all_packages_hash_table)
+    truck2b = truck_deliver_packages(truck2b, salt_lake_city_graph, all_packages_hash_table)
 
     # Hand off control to the view; show main menu
-    # view.main_menu()
-    # for item in vertex_list:
-    #    print(item)
+    view.main_menu(all_packages_hash_table, truck_list)
 
-    for package in all_packages_hash_table:
-        print(str(package))
-    print(salt_lake_city_graph)
+    # for package in all_packages_hash_table:
+    #     print(str(package))
+    # print(salt_lake_city_graph)
 
 
 def load_distance_data():
@@ -152,6 +158,10 @@ def load_package_data(vertex_list):
                 if node == address_lbl:
                     destination = node
 
+            city = row[2]
+            state = row[3]
+            deadline_str = row[5]
+
             if row[5] == 'EOD':
                 deadline = datetime.strptime('23:59:59.999999', '%H:%M:%S.%f').time()
             else:
@@ -159,7 +169,7 @@ def load_package_data(vertex_list):
             mass_lb = float(row[6])
             note = row[7]
 
-            package = PackageWGUPS(package_id, mass_lb, note, destination, deadline)
+            package = PackageWGUPS(package_id, city, state, mass_lb, note, destination, deadline_str, deadline)
             warehouse_package_inventory.insert(package_id, package)
 
     return warehouse_package_inventory

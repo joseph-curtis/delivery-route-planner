@@ -19,7 +19,8 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 """
 
-from datetime import datetime
+from datetime import datetime, time
+import datetime
 
 import model
 from utilities import ChainingHashTable
@@ -29,14 +30,14 @@ from utilities import ChainingHashTable
 
 
 def truck_load_packages(truck: model.DeliveryTruck, city_map: model.Graph,
-                        hub_inventory: ChainingHashTable):
+                        hub_inventory):
     for _ in range(truck.capacity):
         try:
-            next_stop = min_distance_address_from(truck.current_address, city_map, hub_inventory)
+            next_stop = model.min_distance_address_from(truck.current_address, city_map, hub_inventory)
 
             closest_package = hub_inventory.__iter__().__next__()
             for item in hub_inventory:
-                min_distance_address_from(truck.current_address, city_map)
+                model.min_distance_address_from(truck.current_address, city_map)
         except StopIteration:
             return truck
 
@@ -44,29 +45,58 @@ def truck_load_packages(truck: model.DeliveryTruck, city_map: model.Graph,
 
 
 def load_trucks_manual(starting_address: model.Vertex, packages: ChainingHashTable):
-    truck1a = model.DeliveryTruck(starting_address, datetime.strptime('08:00', '%H:%M').time())
-    truck1b = model.DeliveryTruck(starting_address, datetime.strptime('09:05', '%H:%M').time())
-    truck2a = model.DeliveryTruck(starting_address, datetime.strptime('08:00', '%H:%M').time())
-    truck2b = model.DeliveryTruck(starting_address, datetime.strptime('10:20', '%H:%M').time())
+    truck1a = model.DeliveryTruck(starting_address, time(hour=8, minute=0))
+    truck1b = model.DeliveryTruck(starting_address, time(hour=9, minute=5))
+    truck2a = model.DeliveryTruck(starting_address, time(hour=8, minute=0))
+    truck2b = model.DeliveryTruck(starting_address, time(hour=10, minute=20))
 
     # manual loading:
-    truck1a.truck_packages = \
+    truck1a.inventory = \
         [packages.get(13), packages.get(14), packages.get(15), packages.get(16), packages.get(19),
          packages.get(20), packages.get(21), packages.get(34), packages.get(39),
          packages.get(27), packages.get(35), ]
-    truck2a.truck_packages = \
+    truck2a.inventory = \
         [packages.get(1), packages.get(3), packages.get(4), packages.get(7), packages.get(8),
          packages.get(18), packages.get(29), packages.get(30), packages.get(31), packages.get(36),
          packages.get(37), packages.get(38), packages.get(40), ]
-    truck1b.truck_packages = \
+    truck1b.inventory = \
         [packages.get(6), packages.get(25), packages.get(26), packages.get(28), packages.get(32),
          packages.get(11), packages.get(12), packages.get(17), packages.get(22), packages.get(23), ]
-    truck2b.truck_packages = \
+    truck2b.inventory = \
         [packages.get(5), packages.get(9),
          packages.get(2), packages.get(10), packages.get(24), packages.get(33), ]
 
     return truck1a, truck1b, truck2a, truck2b
 
 
-def truck_deliver_packages(truck: model.DeliveryTruck):
+def truck_deliver_packages(truck: model.DeliveryTruck, city_map: model.Graph, all_packages: ChainingHashTable):
+    # the following two functions devine travel and delivery
+    def go_to_next_stop():
+        next_stop = model.min_distance_address_from(truck.current_address, city_map, truck.inventory)
+        truck.miles_traveled += model.distance_between(truck.current_address, next_stop, city_map)
+        delivery_time_hours = truck.miles_traveled / truck.speed_mi_hr
+        truck.travel_delta = datetime.timedelta(hours=delivery_time_hours)
+
+        truck.route_list.append(next_stop)
+        truck.current_address = next_stop
+
+    def unload_packages():
+        for package in truck.inventory:
+            if package.destination == truck.current_address:
+                # convert departure time to datetime.datetime object
+                departure_datetime = datetime.datetime.combine(datetime.date.today(), truck.departure_time)
+                # add travel delta to departure time
+                delivery_datetime = departure_datetime + truck.travel_delta
+                # extract time component from delivery datetime
+                delivery_time = delivery_datetime.time()
+
+                package.delivery_time = delivery_time
+                truck.inventory.remove(package)
+                print("package in main list: " + str(all_packages.get(package.package_id)))
+
+    # repeat travel and delivery for each item in the truck
+    for _ in range(len(truck.inventory)):
+        go_to_next_stop()
+        unload_packages()
+
     return truck

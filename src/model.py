@@ -19,8 +19,8 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 """
 
-# Date: 19 Apr 2023
-from datetime import datetime
+# Date: 24 Apr 2023
+from datetime import datetime, timedelta
 from utilities import ChainingHashTable
 
 
@@ -97,22 +97,26 @@ class Graph:
 
 
 class PackageWGUPS:
-    def __init__(self, package_id: int, mass_lb: float, notes: str,
-                 destination: Vertex = None,
+    def __init__(self, package_id: int, city: str, state: str, mass_kg: float, notes: str,
+                 destination: Vertex, deadline_str: str,
                  deadline=datetime.strptime('23:59:59.999999', '%H:%M:%S.%f').time()):
         self.package_id = package_id
-        self.mass_lb = mass_lb
+        self.mass_kg = mass_kg
         self.notes = notes
         self.destination = destination
+        self.city = city
+        self.state = state
         self.deadline = deadline
-        self.delivered_to = None
+        self.deadline_str = deadline_str
+        self.delivery_time = None
 
     def __repr__(self):
-        return f'PackageWGUPS("{self.package_id}", "{self.mass_lb}",' \
+        return f'PackageWGUPS("{self.package_id}", "{self.mass_kg}",' \
                f' "{self.notes}", "{self.destination}", "{self.deadline}")'
 
     def __str__(self):
-        return f'Package(ID# "{self.package_id}": "{self.notes}"; TO: "{self.destination}", BY: "{self.deadline}")'
+        return f'Package(ID# "{self.package_id}": "{self.notes}"; TO: "{self.destination}", BY: "{self.deadline}", ' \
+               f'DELIVERED: "{self.delivery_time}")'
 
     def __eq__(self, other):
         return isinstance(other, PackageWGUPS) \
@@ -125,16 +129,15 @@ class PackageWGUPS:
 class DeliveryTruck:
     def __init__(self, current_address: Vertex,
                  departure_time: datetime.time = datetime.strptime('08:00', '%H:%M').time(),
-                 mileage: float = 0.0, speed_mi_hr: float = 18.0, capacity: int = 16):
+                 miles_traveled: float = 0.0, speed_mi_hr: float = 18.0, capacity: int = 16):
         self.current_address = current_address
-        self.mileage = mileage
+        self.miles_traveled = miles_traveled
         self.speed_mi_hr = speed_mi_hr
         self.capacity = capacity
         self.departure_time = departure_time
-        self.travel_time = departure_time
-        self.inventory = ChainingHashTable()
+        self.travel_delta = timedelta(0)
         self.route_list = [current_address]
-        self.truck_packages = []
+        self.inventory = []
 
 
 def distance_between(address1: Vertex, address2: Vertex, city_map: Graph):
@@ -146,7 +149,7 @@ def distance_between(address1: Vertex, address2: Vertex, city_map: Graph):
 
 
 def min_distance_address_from(from_address: Vertex, city_map: Graph,
-                              truck_packages: ChainingHashTable):
+                              truck_packages: list):
     closest_address = from_address
     closest_distance = float('inf')
     for item in truck_packages:
