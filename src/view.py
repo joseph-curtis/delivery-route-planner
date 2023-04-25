@@ -25,7 +25,7 @@ import datetime
 from utilities import ChainingHashTable
 
 
-# Date: 28 Mar 2023
+# Date: 25 Apr 2023
 
 def main_menu(packages_hash_table: ChainingHashTable, truck_list):
     def get_user_time(user_input):
@@ -46,16 +46,16 @@ def main_menu(packages_hash_table: ChainingHashTable, truck_list):
             print('-' * 110)
             print('|' + "ALL PACKAGES AT END OF DAY".center(108) + '|')
             print('-' * 110)
-            print("Package ID | " + "Address".center(22) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
-                  + " | Deadline | Mass | " + "Status".center(20))
+            print("ID | " + "Address".center(30) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
+                  + " | Deadline | Mass | " + "Status".center(19))
             for key_value_tuple in packages_hash_table:
                 key, pkg = key_value_tuple
-                print(str(pkg.package_id).rjust(10) + ' | ' + pkg.destination.address[:22].ljust(22) + ' | '
+                print(str(pkg.package_id).rjust(2) + ' | ' + pkg.destination.address[:30].ljust(30) + ' | '
                       + pkg.city.ljust(16) + ' | ' + pkg.state.center(5) + ' | ' + pkg.destination.zipcode + ' | '
                       + pkg.deadline_str.center(8) + ' | ' + str(pkg.mass_kg).rjust(4) + ' | '
                       + pkg.status_delivered)
-            print("Package ID | " + "Address".center(22) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
-                  + " | Deadline | Mass | " + "Status".center(20))
+            print("ID | " + "Address".center(30) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
+                  + " | Deadline | Mass | " + "Status".center(19))
             print('_' * 110)
             total_miles = 0.0
             for truck in truck_list:
@@ -87,7 +87,10 @@ def main_menu(packages_hash_table: ChainingHashTable, truck_list):
                         quit_menu = True
                         continue
                     package_id = int(user_text)
-                    valid_package_id = True
+                    if package_id < 1 or package_id > len(packages_hash_table):
+                        print("Invalid package ID! Must be between 1 and " + str(len(packages_hash_table)))
+                    else:
+                        valid_package_id = True
                 except ValueError:
                     print("incorrect format. Try again or enter 'x' to exit.")
 
@@ -105,11 +108,15 @@ def main_menu(packages_hash_table: ChainingHashTable, truck_list):
             print('|' + ("PACKAGE ID: " + str(pkg.package_id) + " BOUND FOR: " + pkg.destination.label
                          + " @ " + str(user_time)).center(108) + '|')
             print('-' * 110)
-            print("Package ID | " + "Address".center(22) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
-                  + " | Deadline | Mass | " + "Status".center(20))
-            print(str(pkg.package_id).rjust(10) + ' | ' + pkg.destination.address[:22].ljust(22) + ' | '
-                  + pkg.city.ljust(16) + ' | ' + pkg.state.center(5) + ' | ' + pkg.destination.zipcode + ' | '
-                  + pkg.deadline_str.center(8) + ' | ' + str(pkg.mass_kg).rjust(4)
+            print("Package ID | " + "Address".center(len(pkg.destination.address)) + " | " + "City".center(len(pkg.city))
+                  + " | State | " + "Zip".center(5) + " | Deadline | Mass | " + "Status".center(len(status)))
+            print(str(pkg.package_id).rjust(10)
+                  + ' | ' + pkg.destination.address.ljust(len(pkg.destination.address))
+                  + ' | ' + pkg.city.rjust(len(pkg.city))
+                  + ' | ' + pkg.state.center(5)
+                  + ' | ' + pkg.destination.zipcode
+                  + ' | ' + pkg.deadline_str.center(8)
+                  + ' | ' + str(pkg.mass_kg).rjust(4)
                   + ' | ' + status)
 
         elif option == "3":

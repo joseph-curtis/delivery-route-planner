@@ -21,7 +21,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 
 
 # Description: Data structures and misc. utility functions
-# Date: 24 Apr 2023
+# Date: 25 Apr 2023
 
 
 class ChainingHashTable:
@@ -48,6 +48,12 @@ class ChainingHashTable:
 
     def __iter__(self):  # make this object iterable
         return ChainingHashTableIter(self)
+
+    def __len__(self):
+        count = 0
+        for bucket in self.hash_table:
+            count += len(bucket)
+        return count
 
     # when referencing this object, use just the hash_table variable
     def __repr__(self):

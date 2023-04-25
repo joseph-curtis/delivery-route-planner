@@ -26,7 +26,7 @@ import model
 from utilities import ChainingHashTable
 
 
-# Date: 24 Apr 2023
+# Date: 25 Apr 2023
 
 
 def truck_load_packages(truck: model.DeliveryTruck, city_map: model.Graph,
@@ -93,9 +93,7 @@ def truck_deliver_packages(truck: model.DeliveryTruck, city_map: model.Graph, al
     def go_to_next_stop(next_stop=None):
         if next_stop is None:
             next_stop = model.min_distance_address_from(truck.current_address, city_map, truck.inventory)
-        print(name + " moving to " + next_stop.label)
         truck.miles_traveled += model.distance_between(truck.current_address, next_stop, city_map)
-        print(name + " miles_traveled: " + str(truck.miles_traveled))
         delivery_time_hours = truck.miles_traveled / truck.speed_mi_hr
         truck.travel_delta = datetime.timedelta(hours=delivery_time_hours)
 
@@ -117,12 +115,10 @@ def truck_deliver_packages(truck: model.DeliveryTruck, city_map: model.Graph, al
                 truck.inventory.remove(package)
 
     starting_address = truck.current_address
-    print(name + " inventory: " + str(truck.inventory))
     # repeat travel and delivery for each item in the truck
     for _ in range(len(truck.inventory)):
         go_to_next_stop()
         unload_packages()
 
     go_to_next_stop(starting_address)
-    print(name + " route: " + str(truck.route_list))
     return truck
