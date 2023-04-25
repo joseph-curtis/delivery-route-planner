@@ -99,16 +99,23 @@ class Graph:
 class PackageWGUPS:
     def __init__(self, package_id: int, city: str, state: str, mass_kg: float, notes: str,
                  destination: Vertex, deadline_str: str,
-                 deadline=datetime.strptime('23:59:59.999999', '%H:%M:%S.%f').time()):
+                 deadline=datetime.strptime('23:59:59.999999', '%H:%M:%S.%f').time(),
+                 status_arrival: str = "waiting at HUB",
+                 time_arrived: datetime.time = datetime.strptime('08:00', '%H:%M').time()):
         self.package_id = package_id
+        self.city = city
+        self.state = state
         self.mass_kg = mass_kg
         self.notes = notes
         self.destination = destination
-        self.city = city
-        self.state = state
-        self.deadline = deadline
         self.deadline_str = deadline_str
-        self.delivery_time = None
+        self.deadline = deadline
+        self.status_arrival = status_arrival
+        self.status_loaded = "awaiting loading"
+        self.status_delivered = "not delivered"
+        self.time_arrived = time_arrived
+        self.time_loaded = None
+        self.time_delivered = None
 
     def __repr__(self):
         return f'PackageWGUPS("{self.package_id}", "{self.mass_kg}",' \
@@ -116,7 +123,7 @@ class PackageWGUPS:
 
     def __str__(self):
         return f'Package(ID# "{self.package_id}": "{self.notes}"; TO: "{self.destination}", BY: "{self.deadline}", ' \
-               f'DELIVERED: "{self.delivery_time}")'
+               f'DELIVERED: "{self.time_delivered}")'
 
     def __eq__(self, other):
         return isinstance(other, PackageWGUPS) \

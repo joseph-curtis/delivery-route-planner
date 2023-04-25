@@ -45,35 +45,57 @@ def truck_load_packages(truck: model.DeliveryTruck, city_map: model.Graph,
 
 
 def load_trucks_manual(starting_address: model.Vertex, packages: ChainingHashTable):
-    truck1a = model.DeliveryTruck(starting_address, time(hour=8, minute=0))
-    truck1b = model.DeliveryTruck(starting_address, time(hour=9, minute=5))
-    truck2a = model.DeliveryTruck(starting_address, time(hour=8, minute=0))
-    truck2b = model.DeliveryTruck(starting_address, time(hour=10, minute=20))
+    load_time_truck1a = time(hour=8, minute=0)
+    load_time_truck2a = time(hour=8, minute=0)
+    load_time_truck1b = time(hour=9, minute=37)
+    load_time_truck2b = time(hour=10, minute=20)
+    truck1a = model.DeliveryTruck(starting_address, load_time_truck1a)
+    truck1b = model.DeliveryTruck(starting_address, load_time_truck1b)
+    truck2a = model.DeliveryTruck(starting_address, load_time_truck2a)
+    truck2b = model.DeliveryTruck(starting_address, load_time_truck2b)
 
     # manual loading:
     truck1a.inventory = \
         [packages.get(13), packages.get(14), packages.get(15), packages.get(16), packages.get(19),
          packages.get(20), packages.get(21), packages.get(34), packages.get(39),
          packages.get(27), packages.get(35), ]
+    for package in truck1a.inventory:
+        package.time_loaded = load_time_truck1a
+        package.status_loaded = "On Route: Truck 1"
+
     truck2a.inventory = \
         [packages.get(1), packages.get(3), packages.get(4), packages.get(7), packages.get(8),
          packages.get(18), packages.get(29), packages.get(30), packages.get(31), packages.get(36),
          packages.get(37), packages.get(38), packages.get(40), ]
+    for package in truck2a.inventory:
+        package.time_loaded = load_time_truck2a
+        package.status_loaded = "On Route: Truck 2"
+
     truck1b.inventory = \
         [packages.get(6), packages.get(25), packages.get(26), packages.get(28), packages.get(32),
          packages.get(11), packages.get(12), packages.get(17), packages.get(22), packages.get(23), ]
+    for package in truck1b.inventory:
+        package.time_loaded = load_time_truck1b
+        package.status_loaded = "On Route: Truck 1"
+
     truck2b.inventory = \
         [packages.get(5), packages.get(9),
          packages.get(2), packages.get(10), packages.get(24), packages.get(33), ]
+    for package in truck2b.inventory:
+        package.time_loaded = load_time_truck2b
+        package.status_loaded = "On Route: Truck 2"
 
     return truck1a, truck1b, truck2a, truck2b
 
 
-def truck_deliver_packages(truck: model.DeliveryTruck, city_map: model.Graph, all_packages: ChainingHashTable):
+def truck_deliver_packages(truck: model.DeliveryTruck, city_map: model.Graph, all_packages: ChainingHashTable, name='truck'):
     # the following two functions devine travel and delivery
-    def go_to_next_stop():
-        next_stop = model.min_distance_address_from(truck.current_address, city_map, truck.inventory)
+    def go_to_next_stop(next_stop=None):
+        if next_stop is None:
+            next_stop = model.min_distance_address_from(truck.current_address, city_map, truck.inventory)
+        print(name + " moving to " + next_stop.label)
         truck.miles_traveled += model.distance_between(truck.current_address, next_stop, city_map)
+        print(name + " miles_traveled: " + str(truck.miles_traveled))
         delivery_time_hours = truck.miles_traveled / truck.speed_mi_hr
         truck.travel_delta = datetime.timedelta(hours=delivery_time_hours)
 
@@ -90,13 +112,17 @@ def truck_deliver_packages(truck: model.DeliveryTruck, city_map: model.Graph, al
                 # extract time component from delivery datetime
                 delivery_time = delivery_datetime.time()
 
-                package.delivery_time = delivery_time
+                package.time_delivered = delivery_time
+                package.status_delivered = "Delivered: " + str(delivery_time)
                 truck.inventory.remove(package)
-                print("package in main list: " + str(all_packages.get(package.package_id)))
 
+    starting_address = truck.current_address
+    print(name + " inventory: " + str(truck.inventory))
     # repeat travel and delivery for each item in the truck
     for _ in range(len(truck.inventory)):
         go_to_next_stop()
         unload_packages()
 
+    go_to_next_stop(starting_address)
+    print(name + " route: " + str(truck.route_list))
     return truck

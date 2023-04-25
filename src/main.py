@@ -22,7 +22,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 # Title: Daily Local Delivery Route Planner Application
 # Description: Determines an efficient route and delivery distribution
 #              for Daily Local Deliveries (DLD)
-# Date:    10 Apr 2023
+# Date:    24 Apr 2023
 # Sources: w3schools.com/python, docs.python.org, geeksforgeeks.org,
 #          stackoverflow.com, sololearn.com,
 #          Lysecky, R., & Vahid, F. (2018, June).
@@ -56,13 +56,14 @@ def main():
 
     # Load each truck with packages, and determine route:
     truck1a, truck1b, truck2a, truck2b = load_trucks_manual(hub_address, all_packages_hash_table)
-    truck_list = [truck1a, truck1b, truck2a, truck2b]
 
     # Deliver all packages:
-    truck1a = truck_deliver_packages(truck1a, salt_lake_city_graph, all_packages_hash_table)
-    truck2a = truck_deliver_packages(truck2a, salt_lake_city_graph, all_packages_hash_table)
-    truck1b = truck_deliver_packages(truck1b, salt_lake_city_graph, all_packages_hash_table)
-    truck2b = truck_deliver_packages(truck2b, salt_lake_city_graph, all_packages_hash_table)
+    truck1a = truck_deliver_packages(truck1a, salt_lake_city_graph, all_packages_hash_table, 'truck1a')
+    truck2a = truck_deliver_packages(truck2a, salt_lake_city_graph, all_packages_hash_table, 'truck2a')
+    truck1b = truck_deliver_packages(truck1b, salt_lake_city_graph, all_packages_hash_table, 'truck1b')
+    truck2b = truck_deliver_packages(truck2b, salt_lake_city_graph, all_packages_hash_table, 'truck2b')
+
+    truck_list = [truck1a, truck1b, truck2a, truck2b]
 
     # Hand off control to the view; show main menu
     view.main_menu(all_packages_hash_table, truck_list)
@@ -145,7 +146,7 @@ def load_package_data(vertex_list):
         Hash table of all packages at the beginning of delivery day
 
     """
-    warehouse_package_inventory = ChainingHashTable()
+    warehouse_package_inventory = ChainingHashTable(41)
     with open(args.packages, 'r') as package_file:
         pak_table = csv.reader(package_file, delimiter=',')
         next(pak_table, None)  # skip the first row (column labels) in the table
@@ -169,7 +170,18 @@ def load_package_data(vertex_list):
             mass_lb = float(row[6])
             note = row[7]
 
-            package = PackageWGUPS(package_id, city, state, mass_lb, note, destination, deadline_str, deadline)
+            if package_id in [6, 25, 28, 32]:
+                status = "Delayed on flight"
+                time_arrived = datetime.strptime('09:05', '%H:%M').time()
+            elif package_id == 9:
+                status = "Wrong address listed"
+                time_arrived = datetime.strptime('10:20', '%H:%M').time()
+            else:
+                status = "waiting at HUB"
+                time_arrived = datetime.strptime('08:00', '%H:%M').time()
+
+            package = PackageWGUPS(package_id, city, state, mass_lb, note, destination,
+                                   deadline_str, deadline, status, time_arrived)
             warehouse_package_inventory.insert(package_id, package)
 
     return warehouse_package_inventory
