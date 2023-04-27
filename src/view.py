@@ -79,10 +79,14 @@ def main_menu(packages_hash_table: ChainingHashTable, truck_list):
                   + " | Deadline | Mass | " + "Status".center(19))
             for key_value_tuple in packages_hash_table:
                 key, pkg = key_value_tuple
-                print(str(pkg.package_id).rjust(2) + ' | ' + pkg.destination.address[:30].ljust(30) + ' | '
-                      + pkg.city.ljust(16) + ' | ' + pkg.state.center(5) + ' | ' + pkg.destination.zipcode + ' | '
-                      + pkg.deadline_str.center(8) + ' | ' + str(pkg.mass_kg).rjust(4) + ' | '
-                      + pkg.status_delivered)
+                print(str(pkg.package_id).rjust(2)
+                      + ' | ' + pkg.destination.address[:30].ljust(30)
+                      + ' | ' + pkg.city.ljust(16)
+                      + ' | ' + pkg.state.center(5)
+                      + ' | ' + pkg.destination.zipcode
+                      + ' | ' + pkg.deadline_str.center(8)
+                      + ' | ' + str(pkg.mass_kg).rjust(4)
+                      + ' | ' + pkg.status_delivered)
             print("ID | " + "Address".center(30) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
                   + " | Deadline | Mass | " + "Status".center(19))
             print('_' * 110)
@@ -125,7 +129,39 @@ def main_menu(packages_hash_table: ChainingHashTable, truck_list):
                   + ' | ' + status)
 
         elif option == "3":
-            pass
+            try:
+                chosen_time = input_valid_time_obj()
+            except ExitMenu:
+                continue
+
+            print('-' * 110)
+            print('|' + ("ALL PACKAGES STATUS AT: " + str(chosen_time)).center(108) + '|')
+            print('-' * 110)
+            print("ID | " + "Address".center(30) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
+                  + " | Deadline | Mass | " + "Status".center(19))
+            for key_value_tuple in packages_hash_table:
+                key, pkg = key_value_tuple
+                if chosen_time < pkg.time_arrived:
+                    status = pkg.status_arrival
+                elif chosen_time < pkg.time_loaded:
+                    status = "waiting at HUB"
+                elif chosen_time < pkg.time_delivered:
+                    status = pkg.status_loaded
+                else:
+                    status = pkg.status_delivered
+
+                print(str(pkg.package_id).rjust(2)
+                      + ' | ' + pkg.destination.address[:30].ljust(30)
+                      + ' | ' + pkg.city.ljust(16)
+                      + ' | ' + pkg.state.center(5)
+                      + ' | ' + pkg.destination.zipcode
+                      + ' | ' + pkg.deadline_str.center(8)
+                      + ' | ' + str(pkg.mass_kg).rjust(4)
+                      + ' | ' + status)
+            print("ID | " + "Address".center(30) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
+                  + " | Deadline | Mass | " + "Status".center(19))
+            print('_' * 110)
+
         elif option == "4":
             sys.exit("Exiting Application. Have a nice day!")
         else:

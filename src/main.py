@@ -68,10 +68,6 @@ def main():
     # Hand off control to the view; show main menu
     view.main_menu(all_packages_hash_table, truck_list)
 
-    # for package in all_packages_hash_table:
-    #     print(str(package))
-    # print(salt_lake_city_graph)
-
 
 def load_distance_data():
     """
@@ -82,6 +78,8 @@ def load_distance_data():
         Graph of all possible destination vertexes with distance data
     vertex_list : list
         An array of all possible destinations for packages
+    hub_address : Vertex
+        Starting point address where warehouse is located
     """
     salt_lake_city_graph = Graph()
     vertex_list = list()
@@ -142,11 +140,11 @@ def load_package_data(vertex_list):
 
     Returns
     -------
-    warehouse_package_inventory :
+    all_packages_hashtable : ChainingHashTable
         Hash table of all packages at the beginning of delivery day
 
     """
-    warehouse_package_inventory = ChainingHashTable(41)
+    all_packages_hashtable = ChainingHashTable(41)
     with open(args.packages, 'r') as package_file:
         pak_table = csv.reader(package_file, delimiter=',')
         next(pak_table, None)  # skip the first row (column labels) in the table
@@ -182,9 +180,9 @@ def load_package_data(vertex_list):
 
             package = PackageWGUPS(package_id, city, state, mass_lb, note, destination,
                                    deadline_str, deadline, status, time_arrived)
-            warehouse_package_inventory.insert(package_id, package)
+            all_packages_hashtable.insert(package_id, package)
 
-    return warehouse_package_inventory
+    return all_packages_hashtable
 
 
 if __name__ == '__main__':
