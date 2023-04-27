@@ -61,7 +61,7 @@ def load_trucks_manual(starting_address: model.Vertex, packages: ChainingHashTab
          packages.get(27), packages.get(35), ]
     for package in truck1a.inventory:
         package.time_loaded = load_time_truck1a
-        package.status_loaded = "On Route: Truck 1"
+        package.status_loaded = "En Route: Truck 1"
 
     truck2a.inventory = \
         [packages.get(1), packages.get(3), packages.get(4), packages.get(7), packages.get(8),
@@ -69,21 +69,21 @@ def load_trucks_manual(starting_address: model.Vertex, packages: ChainingHashTab
          packages.get(37), packages.get(38), packages.get(40), ]
     for package in truck2a.inventory:
         package.time_loaded = load_time_truck2a
-        package.status_loaded = "On Route: Truck 2"
+        package.status_loaded = "En Route: Truck 2"
 
     truck1b.inventory = \
         [packages.get(6), packages.get(25), packages.get(26), packages.get(28), packages.get(32),
          packages.get(11), packages.get(12), packages.get(17), packages.get(22), packages.get(23), ]
     for package in truck1b.inventory:
         package.time_loaded = load_time_truck1b
-        package.status_loaded = "On Route: Truck 1"
+        package.status_loaded = "En Route: Truck 1"
 
     truck2b.inventory = \
         [packages.get(5), packages.get(9),
          packages.get(2), packages.get(10), packages.get(24), packages.get(33), ]
     for package in truck2b.inventory:
         package.time_loaded = load_time_truck2b
-        package.status_loaded = "On Route: Truck 2"
+        package.status_loaded = "En Route: Truck 2"
 
     return truck1a, truck1b, truck2a, truck2b
 
