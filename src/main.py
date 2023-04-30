@@ -22,7 +22,7 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 # Title: Daily Local Delivery Route Planner Application
 # Description: Determines an efficient route and delivery distribution
 #              for Daily Local Deliveries (DLD)
-# Date:    24 Apr 2023
+# Date:    29 Apr 2023
 # Sources: w3schools.com/python, docs.python.org, geeksforgeeks.org,
 #          stackoverflow.com, sololearn.com,
 #          Lysecky, R., & Vahid, F. (2018, June).
@@ -46,66 +46,79 @@ args = parser.parse_args()
 
 
 def main():
-    """The entry point for the Daily Local Delivery Route Planner Application"""
+    """
+    The entry point for the Daily Local Delivery Route Planner Application
+    Process daily local deliveries.
 
-    # Load vertices into list:
+    Loads distance and package data, creates trucks, delivers packages using trucks,
+    and displays the main menu.
+
+    Returns:
+        None
+    """
+    # Load distance data, package data, and hub address
     salt_lake_city_graph, vertex_list, hub_address = load_distance_data()
-
-    # Load the HUB with all packages for the day
     all_packages_hash_table = load_package_data(vertex_list)
 
-    # Load each truck with packages, and determine route:
+    # Create trucks to deliver packages
+    # Load each truck with packages, and determine route
     truck1a, truck1b, truck2a, truck2b = load_trucks_manual(hub_address, all_packages_hash_table)
 
-    # Deliver all packages:
+    # Deliver packages using the created trucks
     truck1a = truck_deliver_packages(truck1a, salt_lake_city_graph)
     truck2a = truck_deliver_packages(truck2a, salt_lake_city_graph)
     truck1b = truck_deliver_packages(truck1b, salt_lake_city_graph)
     truck2b = truck_deliver_packages(truck2b, salt_lake_city_graph)
 
+    # Store trucks in a list
     truck_list = [truck1a, truck1b, truck2a, truck2b]
 
-    # Hand off control to the view; show main menu
+    # Show main menu to hand off control
     view.main_menu(all_packages_hash_table, truck_list)
 
 
 def load_distance_data():
     """
-    Loads distance data into a graph
+    Load distance data from a CSV file and create a graph representing each address as a Vertex.
+
     Returns
     -------
-    salt_lake_city_graph : model.Graph()
-        Graph of all possible destination vertexes with distance data
-    vertex_list : list
-        An array of all possible destinations for packages
+    salt_lake_city_graph : Graph
+        A graph of all destination address vertexes with distance data
+    vertex_list : list of Vertex
+        An array of all package destinations
     hub_address : Vertex
         Starting point address where warehouse is located
     """
     salt_lake_city_graph = Graph()
     vertex_list = list()
 
+    # Open the CSV file and read the distance table
     with open(args.table, 'r') as distance_file:
         d_table = csv.reader(distance_file, delimiter=',')
         next(d_table, None)  # skip the first row (column labels) in the table
 
         row_index = 0
         for row in d_table:
-            label = row[0]
+            # Extract the label, address and zip code from the row
             # full address is in row[1]
+            label = row[0]
             start_zip = row[1].index('\n')
             end_zip = row[1].index(')')
-
             address = row[1][:start_zip]
             zipcode = row[1][start_zip + 2:end_zip]
 
+            # Create a new vertex and add it to the graph
             new_vertex = Vertex(label, address, zipcode)
             vertex_list.append(new_vertex)
             salt_lake_city_graph.add_vertex(new_vertex)
 
+            # If this is the first row, create an empty distance array
             if row_index == 0:
                 dist_array = [[] for _ in range(len(row) - 2)]
 
             col_index = 0
+            # Add the distances to the distance array
             for value in row[2:]:
                 if value == '':
                     dist_array[row_index].append(None)
@@ -115,16 +128,20 @@ def load_distance_data():
 
             row_index += 1
 
-    # Create graph using vertices from list, and distances from 2-dim array:
+    # Make sure the vertex list and distance array have the same length
     assert len(vertex_list) == len(dist_array)
 
+    # Add the vertices from the list, and distances from 2-dim array:
+    # Add the distances to the graph
     for i in range(len(dist_array)):
         for j in range(len(dist_array[i])):
             if j > i:
+                # Since the distance matrix is symmetric, fill in the other half of the matrix
                 dist_array[i][j] = dist_array[j][i]
-
+            # Add a directed edge between the two vertices with the distance as the weight
             salt_lake_city_graph.add_directed_edge(vertex_list[i], vertex_list[j], dist_array[i][j])
 
+    # Set the hub vertex
     hub_address = vertex_list[0]
 
     return salt_lake_city_graph, vertex_list, hub_address
@@ -132,17 +149,18 @@ def load_distance_data():
 
 def load_package_data(vertex_list):
     """
-    Load packages into a Hash Table
+    Reads package data from a CSV file and creates PackageWGUPS objects for each package.
+
     Parameters
     ----------
-    vertex_list :
-        List of all vertexes in the main salt_lake_city_graph
+    vertex_list : list
+        List of Vertex objects representing delivery addresses.
+        This should be all vertexes in the main salt_lake_city_graph
 
     Returns
     -------
     all_packages_hashtable : ChainingHashTable
-        Hash table of all packages at the beginning of delivery day
-
+        A hashtable of all packages at the beginning of delivery day, with package ID as keys.
     """
     all_packages_hashtable = ChainingHashTable(41)
     with open(args.packages, 'r') as package_file:

@@ -25,13 +25,18 @@ import datetime
 from utilities import ChainingHashTable
 
 
-# Date: 26 Apr 2023
+# Date: 29 Apr 2023
 
 class ExitMenu(Exception):
     pass
 
 
 def input_valid_time_obj():
+    """
+    Asks the user to enter a time in 'HHMM' format and validates the input.
+    Raises ExitMenu if the user enters 'x' or 'X'.
+    Returns a datetime.time object representing the input time if it is valid.
+    """
     while True:
         try:
             user_input = input("Enter time in HHMM format, example: 1325 for 1:25pm ('x' to exit) : ")
@@ -47,6 +52,11 @@ def input_valid_time_obj():
 
 
 def input_valid_package_id(packages_hash_table: ChainingHashTable):
+    """
+    Asks the user to enter a package ID and validates the input.
+    Raises ExitMenu if the user enters 'x' or 'X'.
+    Returns an integer representing the input package ID if it is valid.
+    """
     while True:
         try:
             user_input = input("Enter package ID (a positive integer) or 'x' to exit : ")
@@ -62,6 +72,10 @@ def input_valid_package_id(packages_hash_table: ChainingHashTable):
 
 
 def main_menu(packages_hash_table: ChainingHashTable, truck_list):
+    """
+    Displays the main menu options to the user and takes the user's input.
+    Calls the appropriate function based on the user's input.
+    """
     print("\n***   Welcome to WGUPS Package Delivery Route Planner   ***")
 
     while True:
