@@ -58,10 +58,10 @@ def main():
     truck1a, truck1b, truck2a, truck2b = load_trucks_manual(hub_address, all_packages_hash_table)
 
     # Deliver all packages:
-    truck1a = truck_deliver_packages(truck1a, salt_lake_city_graph, all_packages_hash_table, 'truck1a')
-    truck2a = truck_deliver_packages(truck2a, salt_lake_city_graph, all_packages_hash_table, 'truck2a')
-    truck1b = truck_deliver_packages(truck1b, salt_lake_city_graph, all_packages_hash_table, 'truck1b')
-    truck2b = truck_deliver_packages(truck2b, salt_lake_city_graph, all_packages_hash_table, 'truck2b')
+    truck1a = truck_deliver_packages(truck1a, salt_lake_city_graph)
+    truck2a = truck_deliver_packages(truck2a, salt_lake_city_graph)
+    truck1b = truck_deliver_packages(truck1b, salt_lake_city_graph)
+    truck2b = truck_deliver_packages(truck2b, salt_lake_city_graph)
 
     truck_list = [truck1a, truck1b, truck2a, truck2b]
 

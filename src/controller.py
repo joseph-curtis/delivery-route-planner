@@ -29,8 +29,7 @@ from utilities import ChainingHashTable
 # Date: 25 Apr 2023
 
 
-def truck_load_packages(truck: model.DeliveryTruck, city_map: model.Graph,
-                        hub_inventory):
+def truck_load_packages(truck: model.DeliveryTruck, city_map: model.Graph, hub_inventory):
     for _ in range(truck.capacity):
         try:
             next_stop = model.min_distance_address_from(truck.current_address, city_map, hub_inventory)
@@ -88,7 +87,7 @@ def load_trucks_manual(starting_address: model.Vertex, packages: ChainingHashTab
     return truck1a, truck1b, truck2a, truck2b
 
 
-def truck_deliver_packages(truck: model.DeliveryTruck, city_map: model.Graph, all_packages: ChainingHashTable, name='truck'):
+def truck_deliver_packages(truck: model.DeliveryTruck, city_map: model.Graph):
     # the following two functions devine travel and delivery
     def go_to_next_stop(next_stop=None):
         if next_stop is None:
