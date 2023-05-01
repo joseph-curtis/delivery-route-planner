@@ -76,6 +76,10 @@ def main_menu(packages_hash_table: ChainingHashTable, truck_list):
     Displays the main menu options to the user and takes the user's input.
     Calls the appropriate function based on the user's input.
     """
+    total_miles = 0.0
+    for truck in truck_list:
+        total_miles += truck.miles_traveled
+
     print("\n***   Welcome to WGUPS Package Delivery Route Planner   ***")
 
     while True:
@@ -104,10 +108,7 @@ def main_menu(packages_hash_table: ChainingHashTable, truck_list):
             print("ID | " + "Address".center(30) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
                   + " | Deadline | Mass | " + "Status".center(19))
             print('_' * 110)
-            total_miles = 0.0
-            for truck in truck_list:
-                total_miles += truck.miles_traveled
-            print("\nTotal distance traveled is " + "{:.1f}".format(total_miles) + " miles.")
+            print("***  Total distance traveled is " + "{:.1f}".format(total_miles) + " miles.  ***")
 
         elif option == "2":
             try:
@@ -175,6 +176,7 @@ def main_menu(packages_hash_table: ChainingHashTable, truck_list):
             print("ID | " + "Address".center(30) + " | " + "City".center(16) + " | State | " + "Zip".center(5)
                   + " | Deadline | Mass | " + "Status".center(19))
             print('_' * 110)
+            print("***  Total distance traveled is " + "{:.1f}".format(total_miles) + " miles.  ***")
 
         elif option == "4":
             sys.exit("Exiting Application. Have a nice day!")
