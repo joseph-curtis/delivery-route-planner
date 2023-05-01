@@ -20,6 +20,8 @@ __copyright__ = """Copyright 2023 Joseph Curtis
 """
 
 # Title: Daily Local Delivery Route Planner Application
+# Author:   Joseph Curtis
+# Student ID:  009046367
 # Description: Determines an efficient route and delivery distribution
 #              for Daily Local Deliveries (DLD)
 # Date:    29 Apr 2023
