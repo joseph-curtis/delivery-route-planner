@@ -377,7 +377,7 @@ class DeliveryTruck:
     deliver_package(package: Package) -> None:
         Delivers a package to the destination address.
     """
-    def __init__(self, current_address: Vertex,
+    def __init__(self, current_address: Vertex, label: str,
                  departure_time: datetime.time = datetime.strptime('08:00', '%H:%M').time(),
                  miles_traveled: float = 0.0, speed_mi_hr: float = 18.0, capacity: int = 16):
         """
@@ -387,6 +387,8 @@ class DeliveryTruck:
         ----------
         current_address : Vertex
             The current address of the truck.
+        label : str
+            The identifying name of the truck (eg. Truck #1, Truck #2, etc.)
         departure_time : datetime.time, optional
             The time the truck departs from the warehouse, by default 8:00 AM.
         miles_traveled : float, optional
@@ -397,6 +399,7 @@ class DeliveryTruck:
             The maximum number of packages the truck can carry, by default 16.
         """
         self.current_address = current_address
+        self.label = label
         self.miles_traveled = miles_traveled
         self.speed_mi_hr = speed_mi_hr
         self.capacity = capacity
