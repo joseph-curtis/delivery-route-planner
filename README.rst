@@ -2,6 +2,15 @@
 A Delivery Route Modeling Application
 =====================================
 
+.. _documentation
+
+Documentation
+~~~~~~~~~~~~~
+
+See project wiki or `click here`_  for the Algorithm & Data Structure documentation.
+
+.. _click here: https://github.com/joseph-curtis/delivery-route-planner/wiki/Algorithm-&-Data-Structure-Overview
+
 .. _this-project-demonstrates-:
 
 This Project Demonstrates :
@@ -45,15 +54,6 @@ program for this specific location and use the same program in different cities
 as WGUPS expands its business. As such, you will need to include detailed
 comments following the industry-standards to make your code easy to read and
 justifying the decisions you made while writing your program.
-
-.. _documentation
-
-Documentation
-~~~~~~~~~~~~~
-
-See project wiki or `click here`_  for the Algorithm & Data Structure documentation.
-
-.. _click here: https://github.com/joseph-curtis/delivery-route-planner/wiki/Algorithm-&-Data-Structure-Overview
 
 .. _usage-how-to-run-the-program-:
 
